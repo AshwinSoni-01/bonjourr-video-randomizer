@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bonjourr Video Randomizer</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      background: black;
+    }
+    video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+  <video id="bgVideo" autoplay muted loop></video>
+
+  <script>
+    // ⚠️ Replace with your own Pexels API key
+    const API_KEY = "GEi7GtpOeYhmncbdniCDW3JJDJ9GhAluaIp1ElhmavfoHwuueyW79oei";
+
+    // Define multiple search queries
+    const queries = ["nature", "street", "anime"];
+
+    // Pick one query at random
+    const randomQuery = queries[Math.floor(Math.random() * queries.length)];
+
+    // Fetch videos from Pexels API
+    fetch(`https://api.pexels.com/videos/search?query=${randomQuery}&per_page=20`, {
+      headers: { Authorization: API_KEY }
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.videos && data.videos.length > 0) {
+        // Pick a random video from the results
+        const randomVideo = data.videos[Math.floor(Math.random() * data.videos.length)];
+        const videoUrl = randomVideo.video_files.find(v => v.quality === "hd" && v.file_type === "video/mp4").link;
+
+        // Set video source
+        const videoElement = document.getElementById("bgVideo");
+        videoElement.src = videoUrl;
+      }
+    })
+    .catch(err => console.error("Error fetching videos:", err));
+  </script>
+</body>
+</html>
